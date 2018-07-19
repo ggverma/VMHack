@@ -20,10 +20,7 @@
   <body>
     <div class="container">
       <h4>Welcome, {{uname}}</h4>
-      <h2> <a href="my_products">Your Products </a> </h2>
-      <h2> <a href="upload_product">Upload Products</a> </h2>
-      <h2> <a href="inbox">Inbox </a> </h2>
-      <h3> Products around you </h3>
+      <h3> Your products </h3>
       {% for product in products %}
       <div class="container">
         <h4>{{product.name}}</h4>

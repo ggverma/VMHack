@@ -138,14 +138,13 @@ def upload_product_form():
 
     newProduct = {}
 
-    newProduct[len(productInfo)+1] = {"name": pname, "desc": pdesc, "url": purl, "uname" = UNAME, "year": pyear}
+    newProduct[len(productInfo)+1] = {"name": pname, "desc": pdesc, "url": purl, "uname": UNAME, "year": pyear}
 
     # Put data into DB.
     try:
         productInfo.update(newProduct)
         with open('productInfo.json', 'w') as db:
-            json.dump(userInfo, db)
-        UNAME = uname
+            json.dump(productInfo, db)
         products = searchInProximity(zcode)
         return render_template('home.html', uname = UNAME, products = products)
     except:
@@ -165,10 +164,13 @@ def myproducts():
     #---------------------------------------
 
     # Fetch products from DB
-    products = {}
+    products = []
 
-    # Need only render--------*******************************
-    pass
+    for product in productInfo.values():
+        if product["uname"] == UNAME:
+            products += product,
+
+    return render_template("my_products.html", products = products)
 
 @app.route('/exchange')
 def exchange():
