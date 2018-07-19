@@ -70,12 +70,7 @@ def searchInProximity(zipcode):
     # Returns an array of products.
     #---------------------------------------
     products = []
-    print "zip", zipcode
-    print "pinfo", productInfo
-    print "pfdsabb"
     for product in productInfo.values():
-        print userInfo[product["uname"]]['zip']
-        sys.stdout.flush()
         product['dist'] = abs(int(zipcode) - int(userInfo[product["uname"]]['zip']))
         products += product,
     return sorted(products, key = lambda d: d['dist'])
@@ -121,7 +116,7 @@ def getProductInfo(productID):
     #---------------------------------------
     pass
 
-@app.route('/upload')
+@app.route('/upload_product')
 def upload():
     #---------------------------------------
     # Uploads user product if valid. Shows appropraite message afterwards.
@@ -131,7 +126,7 @@ def upload():
 
 @app.route('/upload_product_form', methods = ['POST'])
 def upload_product_form():
-    pname = request.form['uname']
+    pname = request.form['pname']
     pdesc = request.form['pdesc']
     purl = request.form['purl']
     pyear = request.form['pyear']
@@ -147,9 +142,10 @@ def upload_product_form():
             json.dump(productInfo, db)
         products = searchInProximity(zcode)
         return render_template('home.html', uname = UNAME, products = products)
-    except:
+    except Exception as e:
         # Failed
-        return render_template('register.html')
+        print e
+        return render_template('home.html')
 
 def uploadStatus(message):
     #---------------------------------------
@@ -157,7 +153,7 @@ def uploadStatus(message):
     #---------------------------------------
     pass
 
-@app.route('/myproducts')
+@app.route('/my_products')
 def myproducts():
     #---------------------------------------
     # Shows the current products uploaded by user.
@@ -187,7 +183,7 @@ def inbox():
     # Returns the messages with read or unread status.
     #---------------------------------------
 
-    pass
+    return render_template('inbox.html')
 
 
 if __name__ == "__main__":
