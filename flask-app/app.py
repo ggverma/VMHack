@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import random
 
 app = Flask(__name__)
@@ -47,6 +47,16 @@ def threecats():
     posts += {'number':2, 'url' : images[1]},
     posts += {'number':3, 'url' : images[2]},
     return render_template('threecats.html', posts = posts)
+
+@app.route('/form1')
+def form1():
+    return render_template('form1.html')
+
+@app.route('/form', methods = ['POST'])
+def form():
+    f = {}
+    f['f1'] = request.form['f1']
+    return render_template('form.html', fields=f)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug = True)
