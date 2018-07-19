@@ -9,9 +9,9 @@ with open('/usr/src/app/userdata.json', 'r') as db:
 
 UNAME = "None"
 
-# productInfo = None
-# with open('productdata.json') as db:
-#     productInfo = json.loads(db)
+productInfo = None
+with open('/usr/src/app/productInfo.json') as db:
+    productInfo = json.loads(db.read())
 
 @app.route('/')
 def index():
@@ -52,7 +52,9 @@ def loginform():
         if pwd == userInfo[uname]['pass']:
             # Sucess
             UNAME = uname
-            return render_template('home.html', uname = UNAME)
+            zcode = userInfo[uname]['zip']
+            products = searchInProximity(zcode)
+            return render_template('home.html', uname = UNAME, products = products)
         else:
             # Incorrect pass
             return render_template('login.html')
@@ -60,13 +62,23 @@ def loginform():
         # Unregistered user
         return render_template('login.html')
 
+import sys
 
 def searchInProximity(zipcode):
     #---------------------------------------
     # Searches for products in proximity of a zipcode.
     # Returns an array of products.
     #---------------------------------------
-    pass
+    products = []
+    print "zip", zipcode
+    print "pinfo", productInfo
+    print "pfdsabb"
+    for product in productInfo.values():
+        print userInfo[product["uname"]]['zip']
+        sys.stdout.flush()
+        product['dist'] = abs(int(zipcode) - int(userInfo[product["uname"]]['zip']))
+        products += product,
+    return sorted(products, key = lambda d: d['dist'])
 
 @app.route('/search')
 def searchWithKeyword(keyword, zipcode):
@@ -95,7 +107,8 @@ def registerform():
         with open('userdata.json', 'w') as db:
             json.dump(userInfo, db)
         UNAME = uname
-        return render_template('home.html', uname = UNAME)
+        products = searchInProximity(zcode)
+        return render_template('home.html', uname = UNAME, products = products)
     except:
         # Failed
         return render_template('register.html')
@@ -114,7 +127,7 @@ def upload():
     # Uploads user product if valid. Shows appropraite message afterwards.
     #---------------------------------------
 
-    pass
+    return render_template('upload_product.html')
 
 @app.route('/upload_product_form', methods = ['POST'])
 def upload_product_form():
@@ -123,14 +136,21 @@ def upload_product_form():
     purl = request.form['purl']
     pyear = request.form['pyear']
 
+    newProduct = {}
+
+    newProduct[len(productInfo)+1] = {"name": pname, "desc": pdesc, "url": purl, "uname" = UNAME, "year": pyear}
 
     # Put data into DB.
-    if registerUserInDB():
-        # Success
-        pass
-    else:
+    try:
+        productInfo.update(newProduct)
+        with open('productInfo.json', 'w') as db:
+            json.dump(userInfo, db)
+        UNAME = uname
+        products = searchInProximity(zcode)
+        return render_template('home.html', uname = UNAME, products = products)
+    except:
         # Failed
-        pass
+        return render_template('register.html')
 
 def uploadStatus(message):
     #---------------------------------------

@@ -7,6 +7,7 @@ RUN pip install --no-cache-dir -r /usr/src/app/requirements.txt
 
 COPY app.py /usr/src/app/
 COPY userdata.json /usr/src/app/
+COPY productInfo.json /usr/src/app/
 
 COPY templates/ /usr/src/app/templates/
 
