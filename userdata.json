@@ -1,0 +1,19 @@
+{"gverma":
+  {
+    "pass": "qwerty",
+    "zip": 94040,
+    "products": [1,2]
+  },
+  "mukund":
+  {
+    "pass": "qwerty",
+    "zip": 94040,
+    "products": [3]
+  },
+  "aswin":
+  {
+    "pass": "qwerty",
+    "zip": 94040,
+    "products": [4,5]
+  }
+}
