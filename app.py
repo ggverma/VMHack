@@ -13,6 +13,10 @@ productInfo = None
 with open('/usr/src/app/productInfo.json') as db:
     productInfo = json.loads(db.read())
 
+messages = None
+with open('/usr/src/app/messages.json') as db:
+    messages = json.loads(db.read())
+
 @app.route('/')
 def index():
     #---------------------------------------
@@ -182,6 +186,16 @@ def inbox():
     #---------------------------------------
     # Returns the messages with read or unread status.
     #---------------------------------------
+    my_msgs = []
+    for uname, msg in messages.iteritems():
+        if uname != UNAME:
+            msgPacket = {}
+            msgPacket["from"] = msg["from"]
+            msgPacket["msg"] = msg["msg"]
+            msgPacket["date"] = msg["date"]
+
+            my_msgs +=
+
 
     return render_template('inbox.html')
 
