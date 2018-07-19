@@ -1,15 +1,17 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import json
 
 app = Flask(__name__)
 
 userInfo = None
-with open('userdata.json') as db:
-    userInfo = json.loads(db)
+with open('/usr/src/app/userdata.json', 'r') as db:
+    userInfo = json.loads(db.read())
 
-productInfo = None
-with open('productdata.json') as db:
-    productInfo = json.loads(db)
+UNAME = "None"
+
+# productInfo = None
+# with open('productdata.json') as db:
+#     productInfo = json.loads(db)
 
 @app.route('/')
 def index():
@@ -18,7 +20,7 @@ def index():
     #---------------------------------------
     # return render_template('index.html', url="http://img.buzzfeed.com/buzzfeed-static/static/2013-10/enhanced/webdr05/15/9/anigif_enhanced-buzz-26388-1381844103-11.gif")
     if not loggedIn():
-``        return login()
+        return login()
     else:
         #---------------------------------------
         # Returns some products
@@ -42,13 +44,15 @@ def login():
 
 @app.route('/loginform', methods = ['POST'])
 def loginform():
+    global UNAME
     uname = request.form['uname']
     pwd = request.form['pwd']
 
     if uname in userInfo:
-        if pwd == db[uname]['pwd']:
+        if pwd == userInfo[uname]['pass']:
             # Sucess
-            return render_template('home.html')
+            UNAME = uname
+            return render_template('home.html', uname = UNAME)
         else:
             # Incorrect pass
             return render_template('login.html')
@@ -83,18 +87,19 @@ def registerform():
     pwd = request.form['pwd']
     zcode = request.form['zcode']
 
-    newUser[uname] = {"pass": pwd, "zcode" = zcode, "products" = []}
+    newUser[uname] = {"pass": pwd, "zcode": zcode, "products": []}
 
     # Put data into DB.
-    if registerUserInDB():
-        # Success
-        userInfo.update
-        with open('userdata.json') as db:
-            userInfo += newUser,
-
-    else:
+    try:
+        userInfo.update(newUser)
+        with open('userdata.json', 'w') as db:
+            json.dump(userInfo, db)
+        UNAME = uname
+        return render_template('home.html', uname = UNAME)
+    except:
         # Failed
-        pass
+        return render_template('register.html')
+
 
 @app.route('/product/<productID>')
 def getProductInfo(productID):
