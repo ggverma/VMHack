@@ -2,15 +2,17 @@
   <head>
     <style type="text/css">
       body {
-        background: black;
-        color: white;
+        background: white;
+        color: black;
       }
       div.container {
         max-width: 500px;
         margin: 100px auto;
-        border: 20px solid white;
+        border: 5px solid black;
         padding: 10px;
         text-align: center;
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
       }
       h4 {
         text-transform: uppercase;
@@ -27,7 +29,12 @@
       {% for product in products %}
       <div class="container">
         <h4>{{product.name}}</h4>
+<<<<<<< HEAD
         <a href="product/{{product.id}}"><img src="{{product.url}}" /></a>
+=======
+        <img src="{{product.url}}"
+        width="100%" />
+>>>>>>> 6a1dc862c660b3bf890456a202ff79e15a584bfc
       </div>
       {% endfor %}
     </div>
