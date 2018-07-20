@@ -23,13 +23,15 @@
       <h2> <a href="my_products">Your Products </a> </h2>
       <h2> <a href="upload_product">Upload Products</a> </h2>
       <h2> <a href="inbox">Inbox </a> </h2>
-      <h3> Products around you </h3>
-      {% for product in products %}
       <div class="container">
         <h4>{{product.name}}</h4>
-        <a href="product/{{product.id}}"><img src="{{product.url}}" /></a>
+        <img src="{{product.url}}" />
+        <h3>Description: {{product.desc}}</h3>
+        <h3>Year of Purchase: {{product.year}}</h3>
+        <h3>Exchanger's uname: {{product.uname}}</h3>
+
+        <h4><a href="exchange">Ask to exchange</a></h4>
       </div>
-      {% endfor %}
     </div>
   </body>
 </html>

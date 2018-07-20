@@ -1,24 +1,24 @@
 {
   "gverma":
-  [
     {
     "from": "mukund",
-    "msg": "Hey! Can I get xyz?",
-    "date": "08-08-2018"
+    "msg": "Hey! Can I get xyz? I will exchange my rabbit",
+    "date": "08-08-2018",
+    "id": 12
     },
+  "gverma":
     {
       "from": "aswin",
-      "msg": "ddasjndjksan Did you get that?",
-      "date": "08-08-2018"
-    }
-  ],
+      "msg": "Do you still have that for exchange with 12?",
+      "date": "08-08-2018",
+      "id": 10
+    },
   "aswin":
-  [
     {
       "from": "mukund",
-      "msg": "Hey! Can I get xyz?",
-      "date": "08-08-2018"
+      "msg": "Hey! Can I get xyz for 133?",
+      "date": "08-08-2018",
+      "id": 134
 
     }
-  ]
 }

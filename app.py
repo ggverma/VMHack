@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-import json
+import json, datetime
 
 app = Flask(__name__)
 
@@ -8,6 +8,7 @@ with open('/usr/src/app/userdata.json', 'r') as db:
     userInfo = json.loads(db.read())
 
 UNAME = "None"
+UZIP = 0
 
 productInfo = None
 with open('/usr/src/app/productInfo.json') as db:
@@ -57,6 +58,7 @@ def loginform():
             # Sucess
             UNAME = uname
             zcode = userInfo[uname]['zip']
+            UZIP = zcode
             products = searchInProximity(zcode)
             return render_template('home.html', uname = UNAME, products = products)
         else:
@@ -66,16 +68,15 @@ def loginform():
         # Unregistered user
         return render_template('login.html')
 
-import sys
-
-def searchInProximity(zipcode):
+def searchInProximity(zipcode = 0):
     #---------------------------------------
     # Searches for products in proximity of a zipcode.
     # Returns an array of products.
     #---------------------------------------
     products = []
-    for product in productInfo.values():
+    for key, product in productInfo.iteritems():
         product['dist'] = abs(int(zipcode) - int(userInfo[product["uname"]]['zip']))
+        product['id'] = key
         products += product,
     return sorted(products, key = lambda d: d['dist'])
 
@@ -85,6 +86,11 @@ def searchWithKeyword(keyword, zipcode):
     # Returns products related to keyword sorted by distance if possible.
     #---------------------------------------
     pass
+
+@app.route('/home')
+def home():
+    products = searchInProximity(UZIP)
+    return render_template('home.html', products = products , uname = UNAME)
 
 @app.route('/register')
 def register():
@@ -114,11 +120,13 @@ def registerform():
 
 
 @app.route('/product/<productID>')
-def getProductInfo(productID):
+def productpage(productID):
     #---------------------------------------
     # Returns a product info packet.
     #---------------------------------------
-    pass
+    print 'productID', productID
+    product = productInfo[str(productID)]
+    return render_template('productpage.html', product= product)
 
 @app.route('/upload_product')
 def upload():
@@ -172,14 +180,39 @@ def myproducts():
 
     return render_template("my_products.html", products = products)
 
-@app.route('/exchange')
-def exchange():
+@app.route('/exchange/<productID>')
+def exchange(productID):
     #---------------------------------------
     # Returns current products of user and selected product to exchange with.
     #---------------------------------------
+    oproduct = productInfo[productID]
+    # Need only render--------*******************************
+    return render_template('exchange.html', oproduct = oproduct)
+
+@app.route('/exchangeform', methods = ['POST'])
+def exchangeform():
+    #---------------------------------------
+    # Returns current products of user and selected product to exchange with.
+    #---------------------------------------
+    pid = request.form['pid']
+    msg = request.form['msg']
+    mdate = datetime.datetime.now().strftime("%y-%m-%d-%H-%M")
+
+
+    newMsg =  {}
+    newMsg["from"] = UNAME
+    newMsg["msg"] = msg
+    newMsg["date"] = mdate
+    newMsg["id"] = pid
+    newMsg[productInfo[pid]["uname"]] = newMsg
+
+    messages.update(newMsg)
+    with open('/usr/src/app/messages.json') as db:
+        json.dump(messages, db)
 
     # Need only render--------*******************************
-    pass
+    return render_template('status.html', message = "Message sent!")
+
 
 @app.route('/inbox')
 def inbox():
@@ -187,6 +220,7 @@ def inbox():
     # Returns the messages with read or unread status.
     #---------------------------------------
     my_msgs = []
+    print UNAME
     for uname, msg in messages.iteritems():
         if uname != UNAME:
             msgPacket = {}
@@ -194,10 +228,10 @@ def inbox():
             msgPacket["msg"] = msg["msg"]
             msgPacket["date"] = msg["date"]
 
-            my_msgs +=
+            my_msgs += msgPacket,
 
 
-    return render_template('inbox.html')
+    return render_template('inbox.html', messages = my_msgs)
 
 
 if __name__ == "__main__":

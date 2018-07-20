@@ -20,16 +20,25 @@
   <body>
     <div class="container">
       <h4>Welcome, {{uname}}</h4>
-      <h2> <a href="my_products">Your Products </a> </h2>
-      <h2> <a href="upload_product">Upload Products</a> </h2>
-      <h2> <a href="inbox">Inbox </a> </h2>
-      <h3> Products around you </h3>
+      <h2> <a href="home">Home </a> </h2>
+      <h3> Product you want</h3>
+      <div class="container">
+        <h4>{{oproduct.name}}</h4>
+        <img src="{{oproduct.url}}" />
+      </div>
+      <hr>
+      <h3> Your products </h3>
       {% for product in products %}
       <div class="container">
         <h4>{{product.name}}</h4>
-        <a href="product/{{product.id}}"><img src="{{product.url}}" /></a>
+        <img src="{{product.url}}" />
       </div>
       {% endfor %}
+      <form action="{{ url_for('exchangeform') }}" method="post">
+          enter your product ID to exchange: <input type="text" name="pid"><br>
+          enter your message: <input type="text" name="msg"><br>
+          <input type="submit" value="Submit">
+      </form>
     </div>
   </body>
 </html>
